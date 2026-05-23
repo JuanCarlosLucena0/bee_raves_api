@@ -12,7 +12,7 @@ import java.util.Optional;
         Optional<User> findByUsername(String username);
 
         boolean existsByEmail(String email);
-        boolean existsByusername(String Username);
+        boolean existsByUsername(String Username);
     }
 
 

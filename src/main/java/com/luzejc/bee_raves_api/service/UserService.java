@@ -14,6 +14,12 @@ public class UserService {
     private final BCryptPasswordEncoder passwordEncoder;
 
     public User createUser(User user){
+        if(userRepository.existsByEmail(user.getEmail())){
+            throw new RuntimeException("El email ya está en uso");
+        }
+        if(userRepository.existsByUsername(user.getUsername())){
+            throw new RuntimeException("Nombre de usuario en uso");
+        }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
 
