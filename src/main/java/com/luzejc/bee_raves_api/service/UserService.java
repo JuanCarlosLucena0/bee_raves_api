@@ -6,6 +6,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -15,7 +18,7 @@ public class UserService {
 
     public User createUser(User user){
         if(userRepository.existsByEmail(user.getEmail())){
-            throw new RuntimeException("El email ya está en uso");
+            throw new RuntimeException("Email ya en uso");
         }
         if(userRepository.existsByUsername(user.getUsername())){
             throw new RuntimeException("Nombre de usuario en uso");
@@ -24,4 +27,41 @@ public class UserService {
         return userRepository.save(user);
 
     }
+
+    public List<User> getAllUsers(){
+        return userRepository.findAll();
+    }
+
+    public Optional<User> getUserById(Long id){
+        return userRepository.findById(id);
+    }
+
+    public User updateUser(Long id, User updatedUser){
+        User user = userRepository.findById(id)
+                .orElseThrow( ()-> new RuntimeException("Usuario no encontrado") );
+
+        if (hasValue(updatedUser.getUsername())){
+            user.setUsername(updatedUser.getUsername());
+        }
+        if(hasValue(updatedUser.getEmail())){
+            user.setEmail(updatedUser.getEmail());
+        }
+        if(hasValue(updatedUser.getPassword())){
+            user.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
+        }
+
+        return userRepository.save(updatedUser);
+    }
+
+    public void deleteUser(Long id){
+        if(!userRepository.existsById(id)){
+            throw new RuntimeException("Usuario no encontrado");
+        }
+        userRepository.deleteById(id);
+    }
+
+    private boolean hasValue(String value) {
+        return value != null && !value.isBlank();
+    }
+
 }
