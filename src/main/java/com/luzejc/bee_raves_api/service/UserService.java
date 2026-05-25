@@ -16,8 +16,9 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+    private UserResponseDTO userResponseDTO;
 
-    public User createUser(User user){
+    public UserResponseDTO createUser(User user){
         if(userRepository.existsByEmail(user.getEmail())){
             throw new RuntimeException("Email ya en uso");
         }
@@ -25,19 +26,24 @@ public class UserService {
             throw new RuntimeException("Nombre de usuario en uso");
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return userRepository.save(user);
+        User savedUser = userRepository.save(user);
+        return toResponseDTO(savedUser);
 
     }
 
-    public List<User> getAllUsers(){
-        return userRepository.findAll();
+    public List<UserResponseDTO> getAllUsers(){
+        List<User> users = userRepository.findAll();
+        return users.stream()
+                .map(this::toResponseDTO)
+                .toList();
     }
 
-    public Optional<User> getUserById(Long id){
-        return userRepository.findById(id);
+    public Optional<UserResponseDTO> getUserById(Long id){
+        return userRepository.findById(id)
+                .map(this::toResponseDTO);
     }
 
-    public User updateUser(Long id, User updatedUser){
+    public UserResponseDTO updateUser(Long id, User updatedUser){
         User user = userRepository.findById(id)
                 .orElseThrow( ()-> new RuntimeException("Usuario no encontrado") );
 
@@ -51,7 +57,8 @@ public class UserService {
             user.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
         }
 
-        return userRepository.save(updatedUser);
+        userRepository.save(user);
+        return toResponseDTO(user);
     }
 
     public void deleteUser(Long id){
