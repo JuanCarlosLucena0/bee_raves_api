@@ -1,5 +1,6 @@
 package com.luzejc.bee_raves_api.service;
 
+import com.luzejc.bee_raves_api.dto.UserResponseDTO;
 import com.luzejc.bee_raves_api.entity.User;
 import com.luzejc.bee_raves_api.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -59,6 +60,16 @@ public class UserService {
         }
         userRepository.deleteById(id);
     }
+
+    private UserResponseDTO toResponseDTO(User user){
+        UserResponseDTO dto = new UserResponseDTO();
+        dto.setId(user.getId());
+        dto.setUsername(user.getUsername());
+        dto.setEmail(user.getEmail());
+        dto.setCreatedAt(user.getCreatedAt());
+        return dto;
+    }
+
 
     private boolean hasValue(String value) {
         return value != null && !value.isBlank();

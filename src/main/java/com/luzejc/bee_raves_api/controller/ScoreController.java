@@ -6,7 +6,6 @@ import com.luzejc.bee_raves_api.service.ScoreService;
 import com.luzejc.bee_raves_api.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,7 +21,7 @@ public class ScoreController {
 
     @PostMapping
     public ResponseEntity<Score> createScore(@RequestBody ScoreRequestDTO requestDTO){
-        Score newScore = scoreService.createScore(requestDTO.getUserid() , requestDTO.getPoints());
+        Score newScore = scoreService.createScore(requestDTO.getUserId() , requestDTO.getPoints());
         return ResponseEntity.status(HttpStatus.CREATED).body(newScore);
     }
 

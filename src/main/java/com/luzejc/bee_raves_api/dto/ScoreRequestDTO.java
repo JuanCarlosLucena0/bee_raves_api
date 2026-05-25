@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class ScoreRequestDTO {
-    private Long Userid;
+    private Long userId;
     private Long points;
 }
