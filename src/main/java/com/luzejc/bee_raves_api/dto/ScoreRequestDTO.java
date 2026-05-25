@@ -7,8 +7,8 @@ import java.time.LocalDateTime;
 @Data
 public class ScoreRequestDTO {
     private Long id;
-    private Long userId;
     private Long points;
+    private Long userId;
     private String username;
     private LocalDateTime createdAt;
 }

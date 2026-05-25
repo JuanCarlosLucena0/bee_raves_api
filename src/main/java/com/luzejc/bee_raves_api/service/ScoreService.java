@@ -1,5 +1,6 @@
 package com.luzejc.bee_raves_api.service;
 
+import com.luzejc.bee_raves_api.dto.ScoreRequestDTO;
 import com.luzejc.bee_raves_api.entity.Score;
 import com.luzejc.bee_raves_api.entity.User;
 import com.luzejc.bee_raves_api.repository.ScoreRepository;
@@ -15,26 +16,33 @@ public class ScoreService {
     private final ScoreRepository scoreRepository;
     private final UserRepository userRepository;
 
-    public Score createScore(Long userId, Long points){
+    public ScoreRequestDTO createScore(Long userId, Long points){
         User user = userRepository.findById(userId)
                 .orElseThrow(()-> new RuntimeException("Usuario no encontrado"));
 
         Score score = new Score();
         score.setUser(user);
         score.setPoints(points);
+        scoreRepository.save(score);
 
-        return scoreRepository.save(score);
+        return toResponseDTO(score);
     }
 
-    public List<Score> getAllScores(){
-        return scoreRepository.findAllByOrderByPointsDesc();
+    public List<ScoreRequestDTO> getAllScores(){
+        return scoreRepository.findAllByOrderByPointsDesc()
+                .stream()
+                .map(this::toResponseDTO)
+                .toList();
     }
 
-    public List<Score> getScoresByUser(Long userId){
+    public List<ScoreRequestDTO> getScoresByUser(Long userId){
         if(!userRepository.existsById(userId)){
             throw new RuntimeException("Usuario no encontrado");
         }
-        return scoreRepository.findByUserIdOrderByPointsDesc(userId);
+        return scoreRepository.findByUserIdOrderByPointsDesc(userId)
+                .stream()
+                .map(this::toResponseDTO)
+                .toList();
     }
 
     public void deleteScore(Long id){
@@ -42,6 +50,17 @@ public class ScoreService {
             throw new RuntimeException("Puntuación no encontrado");
         }
         scoreRepository.deleteById(id);
+    }
+
+    private ScoreRequestDTO toResponseDTO(Score score){
+        ScoreRequestDTO dto = new ScoreRequestDTO();
+        dto.setId(score.getId());
+        dto.setPoints(score.getPoints());
+        dto.setUserId(score.getUser().getId());
+        dto.setUsername(score.getUser().getUsername());
+        dto.setCreatedAt(score.getCreatedAt());
+
+        return dto;
     }
 
 }
