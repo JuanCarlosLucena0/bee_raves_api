@@ -2,6 +2,8 @@ package com.luzejc.bee_raves_api.service;
 
 import com.luzejc.bee_raves_api.dto.UserResponseDTO;
 import com.luzejc.bee_raves_api.entity.User;
+import com.luzejc.bee_raves_api.exception.DuplicateResourceException;
+import com.luzejc.bee_raves_api.exception.ResourceNotFoundException;
 import com.luzejc.bee_raves_api.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -20,10 +22,10 @@ public class UserService {
 
     public UserResponseDTO createUser(User user){
         if(userRepository.existsByEmail(user.getEmail())){
-            throw new RuntimeException("Email ya en uso");
+            throw new DuplicateResourceException("Email ya en uso");
         }
         if(userRepository.existsByUsername(user.getUsername())){
-            throw new RuntimeException("Nombre de usuario en uso");
+            throw new DuplicateResourceException("Nombre de usuario en uso");
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         User savedUser = userRepository.save(user);
@@ -45,7 +47,7 @@ public class UserService {
 
     public UserResponseDTO updateUser(Long id, User updatedUser){
         User user = userRepository.findById(id)
-                .orElseThrow( ()-> new RuntimeException("Usuario no encontrado") );
+                .orElseThrow( ()-> new ResourceNotFoundException("Usuario no encontrado") );
 
         if (hasValue(updatedUser.getUsername())){
             user.setUsername(updatedUser.getUsername());
@@ -63,7 +65,7 @@ public class UserService {
 
     public void deleteUser(Long id){
         if(!userRepository.existsById(id)){
-            throw new RuntimeException("Usuario no encontrado");
+            throw new ResourceNotFoundException("Usuario no encontrado");
         }
         userRepository.deleteById(id);
     }
