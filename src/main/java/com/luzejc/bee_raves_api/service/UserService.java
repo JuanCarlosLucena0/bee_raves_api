@@ -1,6 +1,7 @@
 package com.luzejc.bee_raves_api.service;
 
 import com.luzejc.bee_raves_api.dto.UserResponseDTO;
+import com.luzejc.bee_raves_api.dto.UserUpdateDTO;
 import com.luzejc.bee_raves_api.entity.User;
 import com.luzejc.bee_raves_api.exception.DuplicateResourceException;
 import com.luzejc.bee_raves_api.exception.ResourceNotFoundException;
@@ -45,7 +46,7 @@ public class UserService {
                 .map(this::toResponseDTO);
     }
 
-    public UserResponseDTO updateUser(Long id, User updatedUser){
+    public UserResponseDTO updateUser(Long id, UserUpdateDTO updatedUser){
         User user = userRepository.findById(id)
                 .orElseThrow( ()-> new ResourceNotFoundException("Usuario no encontrado") );
 

@@ -1,8 +1,10 @@
 package com.luzejc.bee_raves_api.controller;
 
 import com.luzejc.bee_raves_api.dto.UserResponseDTO;
+import com.luzejc.bee_raves_api.dto.UserUpdateDTO;
 import com.luzejc.bee_raves_api.entity.User;
 import com.luzejc.bee_raves_api.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +20,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<UserResponseDTO> createUser(@RequestBody User user){
+    public ResponseEntity<UserResponseDTO> createUser(@Valid @RequestBody User user){
         UserResponseDTO newUser = userService.createUser(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
     }
@@ -36,8 +38,8 @@ public class UserController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<UserResponseDTO> patchUserById(@PathVariable Long id, @RequestBody User user){
-        UserResponseDTO updatedUser = userService.updateUser(id, user);
+    public ResponseEntity<UserResponseDTO> patchUserById(@PathVariable Long id, @Valid @RequestBody UserUpdateDTO userDto){
+        UserResponseDTO updatedUser = userService.updateUser(id, userDto);
         return ResponseEntity.ok(updatedUser);
     }
 
