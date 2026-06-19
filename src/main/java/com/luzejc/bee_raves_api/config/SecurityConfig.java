@@ -43,6 +43,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/scores").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/scores/user/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/health").permitAll()
 
                         // Any other route requires a valid token
                         .anyRequest().authenticated())

@@ -37,6 +37,11 @@ public class UserController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/health")
+    public ResponseEntity<String> health() {
+        return ResponseEntity.ok("OK");
+    }
+
     @PatchMapping("/{id}")
     public ResponseEntity<UserResponseDTO> patchUserById(@PathVariable Long id, @Valid @RequestBody UserUpdateDTO userDto){
         UserResponseDTO updatedUser = userService.updateUser(id, userDto);
