@@ -80,6 +80,10 @@ public class UserService {
         return dto;
     }
 
+    public Optional<UserResponseDTO> getUserByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .map(this::toResponseDTO);
+    }
 
     private boolean hasValue(String value) {
         return value != null && !value.isBlank();
